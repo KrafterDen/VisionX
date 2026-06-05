@@ -1,0 +1,139 @@
+{
+  "saved_at": 1780654873.1886997,
+  "stage": "initial_scan",
+  "target_color": "blue",
+  "target_count": 2,
+  "knocked_count": 0,
+  "pose": {
+    "x": 0.0,
+    "y": 0.0,
+    "heading_deg": 90.0
+  },
+  "alive_count": 7,
+  "target_alive_count": 3,
+  "obstacle_alive_count": 4,
+  "pins": [
+    {
+      "id": 1,
+      "color": "blue",
+      "x": -14.476494610819053,
+      "y": 30.96803671666584,
+      "angle_deg": -24.6529844461233,
+      "distance_cm": 35.816969606825076,
+      "confidence": 0.7774326566020616,
+      "observations": 22,
+      "max_area": 4144.5,
+      "status": "alive",
+      "is_target": true,
+      "color_votes": {
+        "blue": 22
+      }
+    },
+    {
+      "id": 2,
+      "color": "red",
+      "x": -34.444327591993044,
+      "y": 20.40344992556493,
+      "angle_deg": -59.21937726129467,
+      "distance_cm": 40.970916623694215,
+      "confidence": 0.799156756790569,
+      "observations": 23,
+      "max_area": 3000.5,
+      "status": "alive",
+      "is_target": false,
+      "color_votes": {
+        "red": 23
+      }
+    },
+    {
+      "id": 3,
+      "color": "red",
+      "x": -11.674122122354074,
+      "y": 38.91247980889578,
+      "angle_deg": -16.589204023835265,
+      "distance_cm": 41.426525144287204,
+      "confidence": 0.7889034961814343,
+      "observations": 13,
+      "max_area": 2893.0,
+      "status": "alive",
+      "is_target": false,
+      "color_votes": {
+        "red": 13
+      }
+    },
+    {
+      "id": 4,
+      "color": "blue",
+      "x": 21.253376101604577,
+      "y": 25.607745123850577,
+      "angle_deg": 39.00484691025997,
+      "distance_cm": 35.143153220359245,
+      "confidence": 0.7726200890582826,
+      "observations": 20,
+      "max_area": 4261.0,
+      "status": "alive",
+      "is_target": true,
+      "color_votes": {
+        "blue": 20
+      }
+    },
+    {
+      "id": 5,
+      "color": "red",
+      "x": 19.309037087487543,
+      "y": 35.14773589845323,
+      "angle_deg": 29.024489745010243,
+      "distance_cm": 41.32551552665828,
+      "confidence": 0.7823412762522415,
+      "observations": 18,
+      "max_area": 2902.0,
+      "status": "alive",
+      "is_target": false,
+      "color_votes": {
+        "red": 18
+      }
+    },
+    {
+      "id": 6,
+      "color": "blue",
+      "x": 34.31497869140537,
+      "y": -0.16357985299066552,
+      "angle_deg": 90.44165936000263,
+      "distance_cm": 35.71355793447546,
+      "confidence": 0.7675452344462552,
+      "observations": 9,
+      "max_area": 4121.5,
+      "status": "alive",
+      "is_target": true,
+      "color_votes": {
+        "blue": 9
+      }
+    },
+    {
+      "id": 7,
+      "color": "red",
+      "x": 39.18260907269092,
+      "y": 8.74098898820562,
+      "angle_deg": 77.31304025100326,
+      "distance_cm": 40.59982335760418,
+      "confidence": 0.767553687799835,
+      "observations": 5,
+      "max_area": 2935.0,
+      "status": "alive",
+      "is_target": false,
+      "color_votes": {
+        "red": 5
+      }
+    }
+  ],
+  "tuning": {
+    "k_distance": 2954.0,
+    "merge_radius_cm": 18.0,
+    "cross_color_merge_radius_cm": 14.0,
+    "map_cleanup_merge_radius_cm": 22.0,
+    "map_min_observations": 2,
+    "map_target_min_votes": 2,
+    "forbidden_radius_cm": 18.0,
+    "camera_horizontal_fov_deg": 60.0
+  }
+}

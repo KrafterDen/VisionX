@@ -1,0 +1,49 @@
+{
+  "saved_at": 1780653241.421131,
+  "stage": "final",
+  "target_color": "blue",
+  "target_count": 1,
+  "knocked_count": 0,
+  "pose": {
+    "x": -7.674930606914184,
+    "y": 66.30950294667014,
+    "heading_deg": -95.4831595332773
+  },
+  "alive_count": 2,
+  "target_alive_count": 1,
+  "obstacle_alive_count": 1,
+  "pins": [
+    {
+      "id": 1,
+      "color": "purple",
+      "x": -19.989604957341708,
+      "y": 45.36498215988905,
+      "angle_deg": -75.29745627835307,
+      "distance_cm": 38.6367423635079,
+      "confidence": 0.45447600992255416,
+      "observations": 6,
+      "max_area": 3310.5,
+      "status": "alive",
+      "is_target": false
+    },
+    {
+      "id": 2,
+      "color": "blue",
+      "x": -23.580655929546783,
+      "y": 46.7726898920414,
+      "angle_deg": -74.75824324167843,
+      "distance_cm": 42.42452041082178,
+      "confidence": 0.4691619639937678,
+      "observations": 3,
+      "max_area": 1988.5,
+      "status": "alive",
+      "is_target": true
+    }
+  ],
+  "tuning": {
+    "k_distance": 2954.0,
+    "merge_radius_cm": 18.0,
+    "forbidden_radius_cm": 18.0,
+    "camera_horizontal_fov_deg": 60.0
+  }
+}

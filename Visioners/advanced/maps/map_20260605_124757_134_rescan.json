@@ -1,0 +1,88 @@
+{
+  "saved_at": 1780652877.134621,
+  "stage": "rescan",
+  "target_color": "blue",
+  "target_count": 1,
+  "knocked_count": 0,
+  "pose": {
+    "x": 0.0,
+    "y": 0.0,
+    "heading_deg": 60.0
+  },
+  "alive_count": 5,
+  "target_alive_count": 5,
+  "obstacle_alive_count": 0,
+  "pins": [
+    {
+      "id": 1,
+      "color": "blue",
+      "x": -59.420691968203506,
+      "y": 44.38764829178503,
+      "angle_deg": -53.21406590179049,
+      "distance_cm": 74.6203141531126,
+      "confidence": 0.7160753973533623,
+      "observations": 14,
+      "max_area": 846.0,
+      "status": "alive",
+      "is_target": true
+    },
+    {
+      "id": 2,
+      "color": "blue",
+      "x": -39.955680522405615,
+      "y": 63.140818166998244,
+      "angle_deg": -32.26726534449929,
+      "distance_cm": 75.06311527385981,
+      "confidence": 0.6915683143308635,
+      "observations": 10,
+      "max_area": 903.0,
+      "status": "alive",
+      "is_target": true
+    },
+    {
+      "id": 3,
+      "color": "blue",
+      "x": -8.26941974309165,
+      "y": 73.86073910156209,
+      "angle_deg": -6.34742846599201,
+      "distance_cm": 74.6074358974359,
+      "confidence": 0.67290150941013,
+      "observations": 5,
+      "max_area": 806.5,
+      "status": "alive",
+      "is_target": true
+    },
+    {
+      "id": 4,
+      "color": "blue",
+      "x": 30.121850972937896,
+      "y": 66.05561013606538,
+      "angle_deg": 24.544169580000272,
+      "distance_cm": 73.37599486521181,
+      "confidence": 0.6884611886929497,
+      "observations": 7,
+      "max_area": 885.0,
+      "status": "alive",
+      "is_target": true
+    },
+    {
+      "id": 5,
+      "color": "blue",
+      "x": 51.40932872822959,
+      "y": 50.16558653807065,
+      "angle_deg": 45.521848081667486,
+      "distance_cm": 72.13675213675214,
+      "confidence": 0.6931884822894675,
+      "observations": 3,
+      "max_area": 879.5,
+      "status": "alive",
+      "is_target": true
+    }
+  ],
+  "tuning": {
+    "k_distance": 2954.0,
+    "merge_radius_cm": 18.0,
+    "forbidden_radius_cm": 18.0,
+    "camera_horizontal_fov_deg": 60.0
+  }
+}

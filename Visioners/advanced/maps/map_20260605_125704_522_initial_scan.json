@@ -1,0 +1,101 @@
+{
+  "saved_at": 1780653424.5224864,
+  "stage": "initial_scan",
+  "target_color": "blue",
+  "target_count": 1,
+  "knocked_count": 0,
+  "pose": {
+    "x": 0.0,
+    "y": 0.0,
+    "heading_deg": 60.0
+  },
+  "alive_count": 6,
+  "target_alive_count": 3,
+  "obstacle_alive_count": 3,
+  "pins": [
+    {
+      "id": 1,
+      "color": "blue",
+      "x": -31.29068930138884,
+      "y": 41.68973287319845,
+      "angle_deg": -37.02719842102954,
+      "distance_cm": 52.30156043467779,
+      "confidence": 0.7207689006573937,
+      "observations": 15,
+      "max_area": 1930.5,
+      "status": "alive",
+      "is_target": true
+    },
+    {
+      "id": 2,
+      "color": "purple",
+      "x": -8.195172523063226,
+      "y": 49.44020959149168,
+      "angle_deg": -9.387027598362153,
+      "distance_cm": 50.24091368044279,
+      "confidence": 0.5416704759322654,
+      "observations": 12,
+      "max_area": 2180.0,
+      "status": "alive",
+      "is_target": false
+    },
+    {
+      "id": 3,
+      "color": "purple",
+      "x": 14.354686366388211,
+      "y": 46.844441859561165,
+      "angle_deg": 17.417131306223638,
+      "distance_cm": 49.38532393942065,
+      "confidence": 0.7710614319822371,
+      "observations": 8,
+      "max_area": 2236.5,
+      "status": "alive",
+      "is_target": false
+    },
+    {
+      "id": 4,
+      "color": "blue",
+      "x": -8.458903541976882,
+      "y": 54.651338422284006,
+      "angle_deg": -8.905058040021856,
+      "distance_cm": 55.381294117647066,
+      "confidence": 0.5421023505679551,
+      "observations": 5,
+      "max_area": 1480.0,
+      "status": "alive",
+      "is_target": true
+    },
+    {
+      "id": 5,
+      "color": "purple",
+      "x": 37.78078079978839,
+      "y": 29.886158132693907,
+      "angle_deg": 51.758882818480544,
+      "distance_cm": 48.28307651215687,
+      "confidence": 0.7630056461901783,
+      "observations": 10,
+      "max_area": 2067.0,
+      "status": "alive",
+      "is_target": false
+    },
+    {
+      "id": 6,
+      "color": "blue",
+      "x": 22.60040062399476,
+      "y": 60.10902792069312,
+      "angle_deg": 20.605764649952107,
+      "distance_cm": 64.21739130434783,
+      "confidence": 0.6019021739130435,
+      "observations": 1,
+      "max_area": 1107.5,
+      "status": "alive",
+      "is_target": true
+    }
+  ],
+  "tuning": {
+    "k_distance": 2954.0,
+    "merge_radius_cm": 18.0,
+    "forbidden_radius_cm": 18.0,
+    "camera_horizontal_fov_deg": 60.0
+  }
+}

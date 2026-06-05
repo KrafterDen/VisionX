@@ -1,0 +1,92 @@
+{
+  "saved_at": 1780654511.9555016,
+  "stage": "initial_scan",
+  "target_color": "blue",
+  "target_count": 2,
+  "knocked_count": 0,
+  "pose": {
+    "x": 0.0,
+    "y": 0.0,
+    "heading_deg": 60.0
+  },
+  "alive_count": 4,
+  "target_alive_count": 2,
+  "obstacle_alive_count": 2,
+  "pins": [
+    {
+      "id": 1,
+      "color": "red",
+      "x": -13.285781951420619,
+      "y": 41.2273919368503,
+      "angle_deg": -18.51153864089855,
+      "distance_cm": 44.56586586813669,
+      "confidence": 0.7640137823046552,
+      "observations": 39,
+      "max_area": 2812.5,
+      "status": "alive",
+      "is_target": false,
+      "color_votes": {
+        "red": 39
+      }
+    },
+    {
+      "id": 2,
+      "color": "blue",
+      "x": -31.471617036861314,
+      "y": 34.64343862159787,
+      "angle_deg": -41.81691784460884,
+      "distance_cm": 47.402830598682264,
+      "confidence": 0.5965878786287172,
+      "observations": 38,
+      "max_area": 3013.0,
+      "status": "alive",
+      "is_target": true,
+      "color_votes": {
+        "blue": 28,
+        "purple": 10
+      }
+    },
+    {
+      "id": 3,
+      "color": "blue",
+      "x": 17.43883589973506,
+      "y": 45.9052366034171,
+      "angle_deg": 20.696639764286516,
+      "distance_cm": 49.349043899429795,
+      "confidence": 0.7516180878077661,
+      "observations": 14,
+      "max_area": 2250.5,
+      "status": "alive",
+      "is_target": true,
+      "color_votes": {
+        "blue": 14
+      }
+    },
+    {
+      "id": 4,
+      "color": "pink",
+      "x": 34.548000495804544,
+      "y": 36.65757446268675,
+      "angle_deg": 43.075775782504024,
+      "distance_cm": 50.588114754098356,
+      "confidence": 0.46514941330317383,
+      "observations": 2,
+      "max_area": 1548.5,
+      "status": "alive",
+      "is_target": false,
+      "color_votes": {
+        "pink": 2
+      }
+    }
+  ],
+  "tuning": {
+    "k_distance": 2954.0,
+    "merge_radius_cm": 18.0,
+    "cross_color_merge_radius_cm": 14.0,
+    "map_cleanup_merge_radius_cm": 22.0,
+    "map_min_observations": 2,
+    "map_target_min_votes": 2,
+    "forbidden_radius_cm": 18.0,
+    "camera_horizontal_fov_deg": 60.0
+  }
+}
