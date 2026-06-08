@@ -34,7 +34,7 @@ class AdvancedConfig:
     stream_port: int = STREAM_PORT
     stream_path: str = STREAM_PATH
     target_color: str = "blue"
-    target_count: int = 2
+    target_count: int | None = None
 
     frame_width: int = 320
     frame_height: int = 240

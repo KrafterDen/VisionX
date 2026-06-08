@@ -15,75 +15,11 @@ if __package__ in {None, ""}:
         sys.path.insert(0, str(PACKAGE_DIR.parent))
     __package__ = PACKAGE_DIR.name
 
-from .camera_stream import CameraStream
 from .config import AdvancedConfig, VALID_TARGET_COLORS
 from .controller import AdvancedController
 from .debug import RunLogger
+from .frame_source import build_frame_source
 from .robot_io import RobotIO
-
-
-class CameraFrameSource:
-    def __init__(self, config: AdvancedConfig) -> None:
-        self.camera = CameraStream(config.robot_ip, port=config.stream_port, path=config.stream_path)
-
-    def open(self) -> None:
-        self.camera.open()
-
-    def read(self):
-        return self.camera.read()
-
-    def close(self) -> None:
-        self.camera.close()
-
-
-class ImageFrameSource:
-    def __init__(self, path: str) -> None:
-        self.path = path
-        self.frame = None
-
-    def open(self) -> None:
-        self.frame = cv2.imread(self.path)
-        if self.frame is None:
-            raise RuntimeError(f"Cannot read image source: {self.path}")
-
-    def read(self):
-        if self.frame is None:
-            self.open()
-        return True, self.frame.copy()
-
-    def close(self) -> None:
-        self.frame = None
-
-
-class OpenCVFrameSource:
-    def __init__(self, source: str) -> None:
-        self.source = int(source) if source.isdigit() else source
-        self.capture = None
-
-    def open(self) -> None:
-        self.capture = cv2.VideoCapture(self.source)
-        self.capture.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-        if not self.capture.isOpened():
-            raise RuntimeError(f"Cannot open video source: {self.source}")
-
-    def read(self):
-        if self.capture is None:
-            self.open()
-        return self.capture.read()
-
-    def close(self) -> None:
-        if self.capture is not None:
-            self.capture.release()
-            self.capture = None
-
-
-def build_frame_source(config: AdvancedConfig):
-    if not config.video_source:
-        return CameraFrameSource(config)
-    suffix = Path(config.video_source).suffix.lower()
-    if suffix in {".jpg", ".jpeg", ".png", ".webp", ".bmp"}:
-        return ImageFrameSource(config.video_source)
-    return OpenCVFrameSource(config.video_source)
 
 
 def parse_args() -> argparse.Namespace:
@@ -95,7 +31,12 @@ def parse_args() -> argparse.Namespace:
         choices=VALID_TARGET_COLORS,
         help="Target pin color to knock down.",
     )
-    parser.add_argument("--target-count", type=int, default=2)
+    parser.add_argument(
+        "--target-count",
+        type=int,
+        default=None,
+        help="How many target pins to knock. Default: auto-detect after initial scan.",
+    )
     parser.add_argument("--debug", action="store_true")
     parser.add_argument("--dry-run", "--no-robot", action="store_true", dest="dry_run")
     parser.add_argument(
@@ -188,9 +129,7 @@ def config_from_args(args: argparse.Namespace) -> AdvancedConfig:
     return config
 
 
-def main() -> int:
-    args = parse_args()
-    config = config_from_args(args)
+def run_controller(config: AdvancedConfig) -> int:
     logger = RunLogger(config.save_log)
     robot = RobotIO(config)
     frame_source = build_frame_source(config)
@@ -211,6 +150,12 @@ def main() -> int:
             logger.close()
             if config.debug:
                 cv2.destroyAllWindows()
+
+
+def main() -> int:
+    args = parse_args()
+    config = config_from_args(args)
+    return run_controller(config)
 
 
 if __name__ == "__main__":

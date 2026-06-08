@@ -12,19 +12,19 @@ from .config import AdvancedConfig
 from .debug import (
     RunLogger,
     draw_advanced_overlay,
-    save_detection_decision_image,
     save_pin_map,
 )
+from .detection_stabilizer import DetectionStabilizer
 from .geometry import compute_heading, distance, turn_angle
 from .mapping import (
     Pin,
     PinMap,
     RobotPose,
-    detection_to_map_observation,
     estimate_distance_cm,
 )
 from .planner import PlannedPath, plan_path, select_target
 from .robot_io import RobotIO
+from .scanner import FieldScanner
 from .vision import detect_kegs
 
 
@@ -43,74 +43,6 @@ class State(str, Enum):
     RESCAN = "RESCAN"
     DONE = "DONE"
     EMERGENCY_STOP = "EMERGENCY_STOP"
-
-
-class DetectionStabilizer:
-    def __init__(self, config: AdvancedConfig) -> None:
-        self.config = config
-        self.tracks = []
-        self.next_id = 1
-        self.frame_count = 0
-
-    def reset(self) -> None:
-        self.tracks.clear()
-        self.frame_count = 0
-
-    @property
-    def ready(self) -> bool:
-        return self.frame_count >= self.config.detection_confirm_frames
-
-    def filter(self, detections, now: float | None = None):
-        now = time.monotonic() if now is None else now
-        self.frame_count += 1
-        self.tracks = [
-            track
-            for track in self.tracks
-            if now - track["last_seen"] <= self.config.detection_track_max_age_sec
-        ]
-        confirmed = []
-        matched_track_ids = set()
-
-        for detection in detections:
-            track = self._find_track(detection, matched_track_ids)
-            if track is None:
-                track = {
-                    "id": self.next_id,
-                    "color": detection["color"],
-                    "center": detection["center"],
-                    "seen": 0,
-                    "last_seen": now,
-                    "detection": detection,
-                }
-                self.next_id += 1
-                self.tracks.append(track)
-
-            matched_track_ids.add(track["id"])
-            track["seen"] += 1
-            track["center"] = detection["center"]
-            track["last_seen"] = now
-            track["detection"] = detection
-            if track["seen"] >= self.config.detection_confirm_frames:
-                confirmed.append(detection)
-
-        return confirmed
-
-    def _find_track(self, detection, used_track_ids: set[int]):
-        color = detection["color"]
-        cx, cy = detection["center"]
-        best_track = None
-        best_distance = float("inf")
-        for track in self.tracks:
-            if track["id"] in used_track_ids or track["color"] != color:
-                continue
-            tx, ty = track["center"]
-            center_distance = math.hypot(cx - tx, cy - ty)
-            if center_distance < best_distance:
-                best_track = track
-                best_distance = center_distance
-        if best_distance <= self.config.detection_track_radius_px:
-            return best_track
-        return None
 
 
 class AdvancedController:
@@ -137,8 +69,17 @@ class AdvancedController:
         now = time.time()
         self.run_timestamp = time.strftime("%Y%m%d_%H%M%S", time.localtime(now))
         self.run_timestamp = f"{self.run_timestamp}_{int((now % 1) * 1000):03d}"
-        self.saved_detection_decisions: set[tuple[int, str]] = set()
-        self.detection_debug_sequence = 0
+        self.scanner = FieldScanner(
+            config=config,
+            robot=robot,
+            pose=self.pose,
+            logger=logger,
+            detection_stabilizer=self.detection_stabilizer,
+            read_frame=self._read_frame,
+            debug_frame=self._debug_scan_frame,
+            set_last_command=self._set_last_command,
+            run_timestamp=self.run_timestamp,
+        )
 
     def run(self) -> None:
         try:
@@ -150,6 +91,7 @@ class AdvancedController:
 
             self.pin_map = self.initial_scan()
             self._transition(State.BUILD_MAP, "scan complete")
+            self._resolve_target_count()
             self._log_map()
             self._save_map("initial_scan")
             if self.config.scan_only:
@@ -160,6 +102,7 @@ class AdvancedController:
 
             rescan_attempts = 0
             waypoint_failures = 0
+            assert self.config.target_count is not None
             while self.knocked_count < self.config.target_count:
                 target = self._select_target_or_rescan()
                 if target is None:
@@ -249,49 +192,19 @@ class AdvancedController:
             if self.config.stop_on_exception:
                 raise
 
+    def _resolve_target_count(self) -> None:
+        if self.config.target_count is not None:
+            return
+        self.config.target_count = len(self.pin_map.target_pins())
+        self.logger.log(
+            "target_count_detected",
+            target_color=self.config.target_color,
+            target_count=self.config.target_count,
+        )
+
     def initial_scan(self) -> PinMap:
         self._transition(State.INITIAL_SCAN, "sweeping field")
-        pin_map = PinMap()
-        self.detection_stabilizer.reset()
-
-        if self.config.dry_run and self.config.video_source:
-            for _ in range(max(1, self.config.dry_run_scan_frames)):
-                ok, frame = self._read_frame()
-                if not ok:
-                    break
-                self._add_frame_observations(pin_map, frame, self.pose.heading_deg)
-            self.robot.stop()
-            self._cleanup_map(pin_map)
-            return pin_map
-
-        half_angle = self.config.max_scan_angle_deg / 2.0
-        left_duration = half_angle / self.config.scan_left_angular_speed_deg_per_sec
-        self.robot.timed_command("left", left_duration, self.config.scan_left_pwm)
-        self.pose.heading_deg -= half_angle
-
-        sweep_duration = self.config.max_scan_angle_deg / self.config.scan_right_angular_speed_deg_per_sec
-        sweep_start = time.monotonic()
-        last_command_at = 0.0
-        self.robot.set_speed(self.config.scan_right_pwm)
-        while time.monotonic() - sweep_start < sweep_duration:
-            now = time.monotonic()
-            if now - last_command_at >= self.config.command_interval_sec:
-                self.robot.move_once("right")
-                self.last_command = "right"
-                last_command_at = now
-            ok, frame = self._read_frame()
-            if not ok:
-                continue
-            elapsed = now - sweep_start
-            scan_heading = -half_angle + self.config.scan_right_angular_speed_deg_per_sec * elapsed
-            detections = self._detect_stable_kegs(frame)
-            self._add_detections_to_map(pin_map, detections, scan_heading, frame=frame)
-            self._debug(frame, detections, pin_map=pin_map)
-
-        self.robot.stop()
-        self.pose.heading_deg = half_angle
-        self._cleanup_map(pin_map)
-        return pin_map
+        return self.scanner.scan()
 
     def rescan(self) -> PinMap:
         self._transition(State.RESCAN, "rebuilding approximate map")
@@ -505,64 +418,6 @@ class AdvancedController:
     def _detections_ready(self) -> bool:
         return self.detection_stabilizer.ready
 
-    def _add_frame_observations(self, pin_map: PinMap, frame, scan_heading: float) -> None:
-        detections = self._detect_stable_kegs(frame)
-        self._add_detections_to_map(pin_map, detections, scan_heading, frame=frame)
-
-    def _add_detections_to_map(self, pin_map: PinMap, detections, scan_heading: float, *, frame=None) -> None:
-        for detection in detections:
-            observation = detection_to_map_observation(
-                detection,
-                robot_pose=self.pose,
-                scan_heading_deg=scan_heading,
-                frame_width=self.config.frame_width,
-                camera_horizontal_fov_deg=self.config.camera_horizontal_fov_deg,
-                k_distance=self.config.k_distance,
-            )
-            pin = pin_map.add_observation(
-                **observation,
-                target_color=self.config.target_color,
-                merge_radius_cm=self.config.merge_radius_cm,
-                cross_color_merge_radius_cm=self.config.cross_color_merge_radius_cm,
-                target_min_votes=self.config.map_target_min_votes,
-            )
-            self._save_detection_decision_debug(frame, detection, pin, observation)
-            self.logger.log("map_observation", pin_id=pin.id, detection=detection, observation=observation)
-
-    def _save_detection_decision_debug(self, frame, detection, pin: Pin, observation: dict) -> None:
-        if frame is None or pin.observations < self.config.map_min_observations:
-            return
-        key = (pin.id, pin.color)
-        if key in self.saved_detection_decisions:
-            return
-        self.saved_detection_decisions.add(key)
-        self.detection_debug_sequence += 1
-        path = save_detection_decision_image(
-            frame,
-            detection=detection,
-            pin=pin,
-            observation=observation,
-            config=self.config,
-            run_timestamp=self.run_timestamp,
-            sequence=self.detection_debug_sequence,
-        )
-        if path is not None:
-            self.logger.log("detection_decision_saved", pin_id=pin.id, color=pin.color, path=str(path))
-
-    def _cleanup_map(self, pin_map: PinMap) -> None:
-        before = len(pin_map.alive_pins())
-        pin_map.cleanup(
-            target_color=self.config.target_color,
-            same_color_radius_cm=self.config.merge_radius_cm,
-            cross_color_radius_cm=self.config.cross_color_merge_radius_cm,
-            cleanup_merge_radius_cm=self.config.map_cleanup_merge_radius_cm,
-            min_observations=self.config.map_min_observations,
-            target_min_votes=self.config.map_target_min_votes,
-        )
-        after = len(pin_map.alive_pins())
-        if before != after:
-            self.logger.log("map_cleanup", before=before, after=after)
-
     def _advance_pose(self, duration_sec: float, speed_cm_s: float | None = None) -> None:
         speed = self.config.approximate_forward_speed_cm_per_sec_at_approach_pwm if speed_cm_s is None else speed_cm_s
         distance_cm = speed * duration_sec
@@ -607,6 +462,12 @@ class AdvancedController:
         key = cv2.waitKey(1) & 0xFF
         if key in {ord("q"), ord("Q"), 27, ord("x"), ord("X")}:
             raise KeyboardInterrupt
+
+    def _debug_scan_frame(self, frame, detections, pin_map: PinMap) -> None:
+        self._debug(frame, detections, pin_map=pin_map)
+
+    def _set_last_command(self, command: str) -> None:
+        self.last_command = command
 
     def _transition(self, next_state: State, reason: str) -> None:
         if self.state != next_state:

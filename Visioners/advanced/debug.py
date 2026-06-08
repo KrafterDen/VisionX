@@ -280,9 +280,10 @@ def _draw_robot(image, world_to_px, pose, config, scale: float) -> None:
 
 
 def _draw_map_legend(image, config, stage: str, knocked_count: int, pin_map) -> None:
+    target_count = "auto" if config.target_count is None else str(config.target_count)
     lines = [
         f"MAP: {stage}",
-        f"TARGET: {config.target_color}  KNOCKED: {knocked_count}/{config.target_count}",
+        f"TARGET: {config.target_color}  KNOCKED: {knocked_count}/{target_count}",
         f"ALIVE: {len(pin_map.alive_pins())}  TARGETS: {len(pin_map.target_pins())}  OBSTACLES: {len(pin_map.obstacle_pins())}",
         f"K={config.k_distance:.0f}  forbidden={config.forbidden_radius_cm:.0f}cm",
     ]
@@ -306,7 +307,7 @@ def draw_advanced_overlay(
     state: str,
     target_color: str,
     knocked_count: int,
-    target_count: int,
+    target_count: int | None,
     command: str,
     forward_allowed: bool,
     selected_pin=None,
@@ -329,9 +330,10 @@ def draw_advanced_overlay(
         cv2.rectangle(output, (x, y), (x + w, y + h), (255, 255, 255), 3)
         cv2.circle(output, target_detection["center"], 7, (255, 255, 255), 2)
 
+    target_count_text = "auto" if target_count is None else str(target_count)
     lines = [
         f"STATE: {state}",
-        f"TARGET: {target_color}  COUNT: {knocked_count}/{target_count}",
+        f"TARGET: {target_color}  COUNT: {knocked_count}/{target_count_text}",
         f"CMD: {command}  FORWARD: {'OK' if forward_allowed else 'BLOCK'}",
     ]
     if selected_pin is not None:

@@ -6,10 +6,20 @@ controller live here.
 
 ## Run
 
+One-click launcher:
+
+```bash
+python Visioners/advanced/run_robot.py
+```
+
+Edit `run_robot.py` to change IP, target color, debug, dry-run, scan-only,
+logging, and common tuning values. The number of target pins is detected
+automatically during the initial scan.
+
 Mapping-only scan:
 
 ```bash
-python Visioners/advanced/autonomous_kegelring.py \
+python Visioners/advanced/cli.py \
   --ip 10.85.194.75 \
   --target-color blue \
   --scan-only \
@@ -23,10 +33,9 @@ python Visioners/advanced/autonomous_kegelring.py \
 Full autonomous run:
 
 ```bash
-python Visioners/advanced/autonomous_kegelring.py \
+python Visioners/advanced/cli.py \
   --ip 10.85.194.75 \
   --target-color blue \
-  --target-count 2 \
   --debug \
   --save-log
 ```
@@ -34,7 +43,7 @@ python Visioners/advanced/autonomous_kegelring.py \
 Dry-run with a saved frame:
 
 ```bash
-python Visioners/advanced/autonomous_kegelring.py \
+python Visioners/advanced/cli.py \
   --target-color blue \
   --dry-run \
   --video-source Visioners/temporary/all_keg_colors_frame.jpg \
