@@ -16,10 +16,7 @@ class RobotIO:
         self.last_command = "stop"
 
     def _create_robot_client(self):
-        try:
-            from robot_client import RobotClient
-        except ImportError:
-            from ..robot_client import RobotClient
+        from .robot_client import RobotClient
 
         return RobotClient(
             self.config.robot_ip,

@@ -1,14 +1,14 @@
 # Advanced Kegelring Controller
 
-Advanced MVP for the colored-pin hackathon task. It reuses the existing
-`Visioners` camera, robot WebSocket, and HSV detection modules.
+Advanced MVP for the colored-pin hackathon task. This directory is self-contained:
+camera IO, robot WebSocket commands, HSV detection, mapping, planning, and the
+controller live here.
 
 ## Run
 
 Mapping-only scan:
 
 ```bash
-cd /home/krafterden9/VisionX_repo
 python Visioners/advanced/autonomous_kegelring.py \
   --ip 10.85.194.75 \
   --target-color blue \
@@ -23,7 +23,6 @@ python Visioners/advanced/autonomous_kegelring.py \
 Full autonomous run:
 
 ```bash
-cd /home/krafterden9/VisionX_repo
 python Visioners/advanced/autonomous_kegelring.py \
   --ip 10.85.194.75 \
   --target-color blue \
@@ -41,6 +40,15 @@ python Visioners/advanced/autonomous_kegelring.py \
   --video-source Visioners/temporary/all_keg_colors_frame.jpg \
   --save-log \
   --map-output-dir Visioners/advanced/maps
+```
+
+Distance calibration:
+
+```bash
+python Visioners/advanced/measure_bbox_height.py \
+  --image Visioners/temporary/all_keg_colors_frame.jpg \
+  --known-distance-cm 60 \
+  --once
 ```
 
 Map JSON files are saved automatically to `Visioners/advanced/maps/`.

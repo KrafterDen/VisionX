@@ -10,24 +10,16 @@ import cv2
 
 
 if __package__ in {None, ""}:
-    THIS_FILE = Path(__file__).resolve()
-    VISIONERS_DIR = THIS_FILE.parents[1]
-    REPO_ROOT = VISIONERS_DIR.parent
-    if str(VISIONERS_DIR) not in sys.path:
-        sys.path.insert(0, str(VISIONERS_DIR))
-    if str(REPO_ROOT) not in sys.path:
-        sys.path.insert(0, str(REPO_ROOT))
-    __package__ = "Visioners.advanced"
+    PACKAGE_DIR = Path(__file__).resolve().parent
+    if str(PACKAGE_DIR.parent) not in sys.path:
+        sys.path.insert(0, str(PACKAGE_DIR.parent))
+    __package__ = PACKAGE_DIR.name
 
+from .camera_stream import CameraStream
 from .config import AdvancedConfig, VALID_TARGET_COLORS
 from .controller import AdvancedController
 from .debug import RunLogger
 from .robot_io import RobotIO
-
-try:
-    from camera_stream import CameraStream
-except ImportError:
-    from ..camera_stream import CameraStream
 
 
 class CameraFrameSource:

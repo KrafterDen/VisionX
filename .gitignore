@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+*.pyo
+
+.venv/
+venv/
+env/
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+*.jsonl
+
+# Runtime/debug artifacts produced by robot runs and calibration helpers.
+Visioners/temporary/
+Visioners/advanced/maps/
+Visioners/advanced/detection_debug/
+Visioners/advanced/temporary/

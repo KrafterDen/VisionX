@@ -5,16 +5,18 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
-try:
-    from config import COMMAND_PATH, COMMAND_PORT, ROBOT_IP, STREAM_PATH, STREAM_PORT
-    from vision import COLOR_RANGES
-except ImportError:
-    COMMAND_PATH = "/ws"
-    COMMAND_PORT = 80
-    ROBOT_IP = "192.168.4.1"
-    STREAM_PATH = "/stream"
-    STREAM_PORT = 81
-    COLOR_RANGES = {}
+from .vision import COLOR_RANGES
+
+
+ROBOT_IP = "10.85.194.75"
+COMMAND_PORT = 80
+COMMAND_PATH = "/ws"
+STREAM_PORT = 81
+STREAM_PATH = "/stream"
+DEFAULT_SPEED = 170
+MIN_SPEED = 85
+MAX_SPEED = 255
+MOVE_REPEAT_SECONDS = 0.2
 
 
 VALID_TARGET_COLORS = ("red", "pink", "purple", "blue", "green", "yellow")

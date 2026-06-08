@@ -12,10 +12,7 @@ from typing import Any
 import cv2
 import numpy as np
 
-try:
-    from vision import BOX_COLORS, draw_detections
-except ImportError:
-    from ..vision import BOX_COLORS, draw_detections
+from .vision import BOX_COLORS, draw_detections
 
 
 class RunLogger:

@@ -8,11 +8,6 @@ from enum import Enum
 
 import cv2
 
-try:
-    from vision import detect_kegs
-except ImportError:
-    from ..vision import detect_kegs
-
 from .config import AdvancedConfig
 from .debug import (
     RunLogger,
@@ -30,6 +25,7 @@ from .mapping import (
 )
 from .planner import PlannedPath, plan_path, select_target
 from .robot_io import RobotIO
+from .vision import detect_kegs
 
 
 class State(str, Enum):
