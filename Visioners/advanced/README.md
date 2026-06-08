@@ -60,6 +60,25 @@ python Visioners/advanced/measure_bbox_height.py \
   --once
 ```
 
+HSV color calibration:
+
+```bash
+python Visioners/advanced/hsv_calibrator.py
+```
+
+From a saved image:
+
+```bash
+python Visioners/advanced/hsv_calibrator.py \
+  --image Visioners/temporary/all_keg_colors_frame.jpg \
+  --color blue
+```
+
+Keys: `1`-`6` select color, `n`/`p` next/previous color, `r` reset current
+color, `Space` print current HSV range, `s` save all ranges to
+`Visioners/advanced/hsv_ranges.json`, `q` quit. If `H min > H max`, the hue
+range wraps around red and is saved as two HSV ranges.
+
 Map JSON files are saved automatically to `Visioners/advanced/maps/`.
 Open `latest_map.json` to inspect the newest map after a run.
 Use `--no-save-map` to disable this.

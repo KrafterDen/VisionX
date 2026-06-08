@@ -16,6 +16,7 @@ Code for the kegelring robotics hackathon task.
 - `Visioners/advanced/geometry.py`, `mapping.py`, `planner.py` - pure logic for pose, map building, and path planning.
 - `Visioners/advanced/debug.py` - overlays, JSONL logging, and map/debug image saving.
 - `Visioners/advanced/measure_bbox_height.py` - distance calibration helper.
+- `Visioners/advanced/hsv_calibrator.py` - interactive HSV mask calibration helper.
 - `Visioners/legacy/` - older manual preview and simple autonomous scripts kept as fallback/reference.
 
 Generated files such as `*.jsonl`, `Visioners/temporary/`, `Visioners/advanced/maps/`,
